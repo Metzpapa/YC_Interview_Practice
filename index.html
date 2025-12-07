@@ -13,7 +13,6 @@
             --accent: #f97316; /* YC Orange */
             --success: #22c55e;
             --error: #ef4444;
-            --timer-color: #3b82f6;
         }
 
         body {
@@ -78,13 +77,12 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             max-width: 800px;
             width: 100%;
-            min-height: 300px;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
         }
 
         .question-text {
@@ -92,7 +90,6 @@
             font-weight: 700;
             line-height: 1.3;
             margin-bottom: 20px;
-            transition: opacity 0.2s;
         }
 
         .category-tag {
@@ -102,45 +99,6 @@
             color: var(--text-sub);
             margin-bottom: 15px;
             font-weight: 600;
-        }
-
-        /* Timer Styles */
-        .timer-container {
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: var(--card-bg);
-            z-index: 4;
-        }
-
-        .timer-container.active {
-            display: flex;
-        }
-
-        .timer-number {
-            font-size: 120px;
-            font-weight: 800;
-            color: var(--timer-color);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-label {
-            font-size: 24px;
-            color: var(--text-sub);
-            margin-top: 10px;
-        }
-
-        .timer-skip {
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--text-sub);
-            opacity: 0.7;
         }
 
         /* Feedback Overlay */
@@ -205,7 +163,6 @@
         @media (max-width: 600px) {
             .question-text { font-size: 24px; }
             .card { padding: 30px 20px; }
-            .timer-number { font-size: 80px; }
         }
     </style>
 </head>
@@ -224,18 +181,9 @@
 
     <div class="container">
         <div class="card">
-            <!-- Question View -->
             <div id="category" class="category-tag">Category</div>
             <div id="question" class="question-text">Loading...</div>
             
-            <!-- Timer View -->
-            <div id="timer-view" class="timer-container">
-                <div class="timer-label">Answer now...</div>
-                <div id="timer-val" class="timer-number">20</div>
-                <div class="timer-skip">Press <span class="key">ENTER</span> to skip</div>
-            </div>
-
-            <!-- Feedback Overlay -->
             <div id="feedback" class="feedback-overlay">
                 <div id="feedback-title">Correct!</div>
                 <div id="feedback-msg" class="feedback-detail">Rohan answers this.</div>
@@ -256,45 +204,74 @@
         try {
             // --- Data ---
             const questions = [
-                // --- The Basics ---
+                // --- ORIGINAL LIST ---
                 { q: "What are you making?", owner: "Rohan", cat: "The Basics" },
                 { q: "How does your product work in more detail?", owner: "Rohan", cat: "The Basics" },
-                { q: "What problem are you solving?", owner: "Sam", cat: "The Basics" },
-                { q: "Who needs what you’re making?", owner: "Sam", cat: "The Basics" },
+                { q: "How many users have ever engaged?", owner: "Sam", cat: "Numbers" },
+                { q: "How many currently active users?", owner: "Sam", cat: "Numbers" },
+                { q: "Total revenue?", owner: "Sam", cat: "Numbers" },
+                { q: "Total costs, fixed and marginal?", owner: "Sam", cat: "Numbers" },
+                { q: "Acquisition funnel conversion rate?", owner: "Sam", cat: "Numbers" },
+                { q: "Customer acquisition cost?", owner: "Sam", cat: "Numbers" },
+                { q: "What are your growth rates for users and revenue?", owner: "Sam", cat: "Numbers" },
+                { q: "What is your growth like?", owner: "Sam", cat: "Numbers" },
+                { q: "What is your burn rate?", owner: "Sam", cat: "Numbers" },
+                { q: "How many users are paying?", owner: "Sam", cat: "Numbers" },
+                { q: "What problem are you solving?", owner: "Sam", cat: "Value Prop" },
+                { q: "What’s new about what you make?", owner: "Rohan", cat: "Value Prop" },
+                { q: "Who needs what you’re making?", owner: "Sam", cat: "Value Prop" },
+                { q: "What has surprised you about user behavior?", owner: "Sam", cat: "Value Prop" },
+                { q: "How do you know people need this?", owner: "Sam", cat: "Value Prop" },
+                { q: "How do users solve this problem now?", owner: "Sam", cat: "Value Prop" },
+                { q: "How big is the market?", owner: "Sam", cat: "Market Size" },
+                { q: "Where do new users come from?", owner: "Sam", cat: "Acquisition" },
+                { q: "What makes new users try you?", owner: "Sam", cat: "Acquisition" },
+                { q: "What makes new users reluctant to try you?", owner: "Sam", cat: "Acquisition" },
+                { q: "How will you overcome user resistance to trying your product?", owner: "Sam", cat: "Acquisition" },
+                { q: "What’s your progress?", owner: "Sam", cat: "Execution" },
+                { q: "What obstacles will you face and how will you overcome them?", owner: "Rohan", cat: "Execution" },
+                { q: "Six months from now, what’s going to be your biggest challenge?", owner: "Rohan", cat: "Execution" },
+                { q: "What is your unique insight?", owner: "Rohan", cat: "Competition" },
+                { q: "What are the key things about your field that outsiders don’t understand?", owner: "Rohan", cat: "Competition" },
+                { q: "Why did you choose this idea to work on?", owner: "Rohan", cat: "Founder Fit" },
                 
-                // --- RapidEye Specifics (Business/Sam) ---
-                { q: "Who is your first paying customer?", owner: "Sam", cat: "Traction" },
-                { q: "Tell me about the two large firms in trial contracts.", owner: "Sam", cat: "Traction" },
-                { q: "What is the total contract value of your current pipeline?", owner: "Sam", cat: "Traction" },
-                { q: "How do you price the product?", owner: "Sam", cat: "Business Model" },
-                { q: "How much money could you make? What is the TAM?", owner: "Sam", cat: "Market" },
-                { q: "Why is the churn risk low for this product?", owner: "Sam", cat: "Business Model" },
-                { q: "How does the integration with Breezeway work?", owner: "Sam", cat: "Product/Ops" },
-                { q: "How do you acquire new property managers?", owner: "Sam", cat: "Growth" },
-                { q: "Why focus on Short Term Rentals first?", owner: "Sam", cat: "Strategy" },
-                { q: "What is your burn rate right now?", owner: "Sam", cat: "Financials" },
-                { q: "Why are you based in Pittsburgh but moving to SF?", owner: "Sam", cat: "Ops" },
-
-                // --- RapidEye Specifics (Tech/Rohan) ---
-                { q: "Why can't a property manager just use GPT-4o to analyze these photos?", owner: "Rohan", cat: "Tech Moat" },
+                // --- TECH DEEP DIVE ---
+                { q: "Why can't a property manager just use GPT-4o or Gemini to analyze these photos?", owner: "Rohan", cat: "Tech Deep Dive" },
                 { q: "What specifically about 'Spatial AI' makes this better than standard 2D image recognition?", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "How do you handle the 1.2 second latency requirement?", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "What specific technical breakthrough are you waiting for in Summer 2026?", owner: "Rohan", cat: "Strategy/Timing" },
-                { q: "Why use Gaussian Splats for damage detection?", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "How do you handle false positives (e.g., shadows vs stains)?", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "Explain your tech stack.", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "How do you verify cleaning tasks in real-time?", owner: "Rohan", cat: "Product Mechanics" },
+                { q: "How do you handle false positives (e.g., a shadow looking like a stain)?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "You mentioned waiting for YC Summer 2026 to complete research—what specific technical breakthrough are you waiting for?", owner: "Rohan", cat: "Tech Deep Dive" },
                 { q: "How do you handle the compute costs of processing video at scale?", owner: "Rohan", cat: "Tech Deep Dive" },
                 { q: "Why is damage detection a hard technical problem that hasn't been solved yet?", owner: "Rohan", cat: "Tech Deep Dive" },
-                { q: "What models are you using currently?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "How does your system handle different lighting conditions or low-quality cameras?", owner: "Rohan", cat: "Tech Deep Dive" },
 
-                // --- General YC / Founder Fit ---
-                { q: "How long have you known each other?", owner: "Sam", cat: "Founders" },
-                { q: "Why did you choose this idea to work on?", owner: "Rohan", cat: "Founders" },
-                { q: "What is your unique insight?", owner: "Rohan", cat: "Competition" },
-                { q: "Who are your competitors and why are you better?", owner: "Sam", cat: "Competition" },
-                { q: "What makes new users reluctant to try you?", owner: "Sam", cat: "Acquisition" },
-                { q: "Six months from now, what’s going to be your biggest challenge?", owner: "Rohan", cat: "Execution" },
+                // --- NEW QUESTIONS FROM MOCK INTERVIEW ---
+                { q: "When you say AI, what specifically is taking place?", owner: "Rohan", cat: "Product/Tech" },
+                { q: "What's the need to turn these videos into 3D space?", owner: "Rohan", cat: "Product/Tech" },
+                { q: "How built out is the product right now?", owner: "Sam", cat: "Traction" },
+                { q: "Is this currently being used by anyone, including your family?", owner: "Sam", cat: "Traction" },
+                { q: "Walk me through that one paying client. How much are they paying?", owner: "Sam", cat: "Economics" },
+                { q: "How much money do you guys think you could be making per property?", owner: "Sam", cat: "Economics" },
+                { q: "Say you were to capture the entire market, what is the total revenue potential?", owner: "Sam", cat: "Market Size" },
+                { q: "How much money do you think you're going to be making one year from today?", owner: "Sam", cat: "Projections" },
+                { q: "Why only 10 companies in a year if you have two in your pipeline already?", owner: "Sam", cat: "Sales Cycle" },
+                { q: "Why are you guys defensible?", owner: "Rohan", cat: "Moat" },
+                { q: "How are you getting distribution right now?", owner: "Sam", cat: "Growth" },
+                { q: "What's the decision behind doing the Summer 2026 batch instead of right now?", owner: "Rohan", cat: "Strategy" },
+                { q: "Why do you need the $500,000?", owner: "Sam", cat: "Fundraising" },
+                { q: "Who is the next person you're going to hire?", owner: "Rohan", cat: "Team" },
+                { q: "What's the biggest bottleneck you guys have within the company?", owner: "Sam", cat: "Execution" },
+                { q: "Say you weren't to get an investment now. How would that change your trajectory?", owner: "Sam", cat: "Runway" },
+                { q: "Why are you guys the right people to build this?", owner: "Rohan", cat: "Founder Fit" },
+                { q: "Why can't Airbnb build this themselves?", owner: "Rohan", cat: "Competition" },
+                { q: "Who's your biggest threat or competition?", owner: "Sam", cat: "Competition" },
+                { q: "Say your company was to shut down in two years. What do you think the most likely reason for that would be?", owner: "Rohan", cat: "Risk Analysis" },
+                { q: "Does using this app slow down the cleaners or inspectors at all?", owner: "Sam", cat: "Operations" },
+                { q: "Why is NOW the right time to build this?", owner: "Rohan", cat: "Why Now" },
+                { q: "What specific technical advancements (like Gemini 2.5) made this possible only recently?", owner: "Rohan", cat: "Why Now" },
+                { q: "How do you plan to spend the investment money specifically?", owner: "Sam", cat: "Fundraising" },
+                { q: "Why are conferences a good use of funds for you?", owner: "Sam", cat: "Growth Strategy" },
+                { q: "How do you move customers from trial to paid contracts?", owner: "Sam", cat: "Sales" },
+                { q: "What is your strategy for acquiring the next 100 customers?", owner: "Sam", cat: "Growth" }
             ];
 
             // --- State ---
@@ -302,9 +279,6 @@
             let shuffledQ = [];
             let currentIndex = 0;
             let isProcessing = false;
-            let isTimerActive = false;
-            let timerInterval = null;
-            const TIMER_DURATION = 20;
 
             // --- DOM Elements ---
             const roleSelect = document.getElementById('roleSelect');
@@ -313,9 +287,6 @@
             const feedbackEl = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackMsg = document.getElementById('feedback-msg');
-            
-            const timerView = document.getElementById('timer-view');
-            const timerVal = document.getElementById('timer-val');
 
             // --- Logic ---
 
@@ -347,48 +318,12 @@
                 qText.textContent = current.q;
                 cText.textContent = current.cat;
                 
-                // Reset UI
                 feedbackEl.className = 'feedback-overlay';
-                timerView.classList.remove('active');
-                qText.style.opacity = "1";
-                
                 isProcessing = false;
-                isTimerActive = false;
-            }
-
-            function startTimer() {
-                isTimerActive = true;
-                timerView.classList.add('active');
-                let timeLeft = TIMER_DURATION;
-                timerVal.textContent = timeLeft;
-
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    timerVal.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        stopTimerAndNext();
-                    }
-                }, 1000);
-            }
-
-            function stopTimerAndNext() {
-                clearInterval(timerInterval);
-                isTimerActive = false;
-                currentIndex++;
-                showQuestion();
             }
 
             function handleAnswer(userClaimed) {
                 if (isProcessing) return;
-                
-                // If timer is active, Enter skips it
-                if (isTimerActive) {
-                    if (userClaimed) { // Enter key
-                        stopTimerAndNext();
-                    }
-                    return;
-                }
-
                 isProcessing = true;
 
                 const currentQ = shuffledQ[currentIndex];
@@ -400,37 +335,27 @@
                 else if (!userClaimed && !isMyQuestion) isCorrect = true;
 
                 if (isCorrect) {
-                    // CORRECT: Show green, then start timer
                     feedbackEl.classList.add('correct');
                     feedbackTitle.textContent = "Correct!";
                     feedbackMsg.textContent = userClaimed 
-                        ? "Go! Answer it." 
+                        ? "You nailed it." 
                         : `Right, ${currentQ.owner} takes this.`;
-                    
-                    feedbackEl.classList.add('show');
-
-                    setTimeout(() => {
-                        feedbackEl.classList.remove('show');
-                        startTimer(); // Start the countdown
-                    }, 1000);
-
                 } else {
-                    // INCORRECT: Show red, then let them retry (do not advance index)
                     feedbackEl.classList.add('incorrect');
                     feedbackTitle.textContent = "Wrong!";
                     if (userClaimed) {
-                        feedbackMsg.textContent = `No, ${currentQ.owner} should answer this.`;
+                        feedbackMsg.textContent = `Oops, ${currentQ.owner} should answer this.`;
                     } else {
-                        feedbackMsg.textContent = "No, this one is yours!";
+                        feedbackMsg.textContent = "Oops, this one is yours!";
                     }
-
-                    feedbackEl.classList.add('show');
-
-                    setTimeout(() => {
-                        feedbackEl.classList.remove('show', 'incorrect');
-                        isProcessing = false; // Allow input again for SAME question
-                    }, 1500);
                 }
+
+                feedbackEl.classList.add('show');
+
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 1500);
             }
 
             // --- Event Listeners ---
@@ -441,15 +366,6 @@
             });
 
             document.addEventListener('keydown', (e) => {
-                // If timer is active, only Enter works to skip
-                if (isTimerActive) {
-                    if (e.code === 'Enter') {
-                        e.preventDefault();
-                        stopTimerAndNext();
-                    }
-                    return;
-                }
-
                 if (isProcessing) return;
 
                 if (e.code === 'Enter') {
