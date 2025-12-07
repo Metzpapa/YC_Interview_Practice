@@ -213,7 +213,7 @@
             { q: "Total costs, fixed and marginal?", owner: "Sam", cat: "Numbers" },
             { q: "Acquisition funnel conversion rate?", owner: "Sam", cat: "Numbers" },
             { q: "Customer acquisition cost?", owner: "Sam", cat: "Numbers" },
-            { q: "Growth rates of all of the above?", owner: "Sam", cat: "Numbers" },
+            { q: "What are your growth rates for users and revenue?", owner: "Sam", cat: "Numbers" }, // Fixed context
             { q: "What is your growth like?", owner: "Sam", cat: "Numbers" },
             { q: "What is your burn rate?", owner: "Sam", cat: "Numbers" },
             { q: "How many users are paying?", owner: "Sam", cat: "Numbers" },
@@ -233,7 +233,7 @@
             { q: "Where do new users come from?", owner: "Sam", cat: "Acquisition" },
             { q: "What makes new users try you?", owner: "Sam", cat: "Acquisition" },
             { q: "What makes new users reluctant to try you?", owner: "Sam", cat: "Acquisition" },
-            { q: "How will you overcome that resistance?", owner: "Sam", cat: "Acquisition" },
+            { q: "How will you overcome user resistance to trying your product?", owner: "Sam", cat: "Acquisition" }, // Fixed context
 
             // Execution
             { q: "What’s your progress?", owner: "Sam", cat: "Execution" },
@@ -361,14 +361,4 @@
                 e.preventDefault();
                 handleAnswer(true); // Claimed
             } else if (e.code === 'Space') {
-                e.preventDefault();
-                handleAnswer(false); // Passed
-            }
-        });
-
-        // Start
-        initGame();
-
-    </script>
-</body>
-</html>
+                e.preventD
