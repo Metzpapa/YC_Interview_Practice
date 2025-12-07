@@ -200,165 +200,160 @@
     </div>
 
     <script>
-        // --- Data ---
-        const questions = [
-            // The Basics
-            { q: "What are you making?", owner: "Rohan", cat: "The Basics" },
-            { q: "How does your product work in more detail?", owner: "Rohan", cat: "The Basics" },
-            
-            // Your Numbers
-            { q: "How many users have ever engaged?", owner: "Sam", cat: "Numbers" },
-            { q: "How many currently active users?", owner: "Sam", cat: "Numbers" },
-            { q: "Total revenue?", owner: "Sam", cat: "Numbers" },
-            { q: "Total costs, fixed and marginal?", owner: "Sam", cat: "Numbers" },
-            { q: "Acquisition funnel conversion rate?", owner: "Sam", cat: "Numbers" },
-            { q: "Customer acquisition cost?", owner: "Sam", cat: "Numbers" },
-            { q: "What are your growth rates for users and revenue?", owner: "Sam", cat: "Numbers" }, // Fixed context
-            { q: "What is your growth like?", owner: "Sam", cat: "Numbers" },
-            { q: "What is your burn rate?", owner: "Sam", cat: "Numbers" },
-            { q: "How many users are paying?", owner: "Sam", cat: "Numbers" },
+    window.addEventListener('DOMContentLoaded', () => {
+        try {
+            // --- Data ---
+            const questions = [
+                { q: "What are you making?", owner: "Rohan", cat: "The Basics" },
+                { q: "How does your product work in more detail?", owner: "Rohan", cat: "The Basics" },
+                { q: "How many users have ever engaged?", owner: "Sam", cat: "Numbers" },
+                { q: "How many currently active users?", owner: "Sam", cat: "Numbers" },
+                { q: "Total revenue?", owner: "Sam", cat: "Numbers" },
+                { q: "Total costs, fixed and marginal?", owner: "Sam", cat: "Numbers" },
+                { q: "Acquisition funnel conversion rate?", owner: "Sam", cat: "Numbers" },
+                { q: "Customer acquisition cost?", owner: "Sam", cat: "Numbers" },
+                { q: "What are your growth rates for users and revenue?", owner: "Sam", cat: "Numbers" },
+                { q: "What is your growth like?", owner: "Sam", cat: "Numbers" },
+                { q: "What is your burn rate?", owner: "Sam", cat: "Numbers" },
+                { q: "How many users are paying?", owner: "Sam", cat: "Numbers" },
+                { q: "What problem are you solving?", owner: "Sam", cat: "Value Prop" },
+                { q: "What’s new about what you make?", owner: "Rohan", cat: "Value Prop" },
+                { q: "Who needs what you’re making?", owner: "Sam", cat: "Value Prop" },
+                { q: "What has surprised you about user behavior?", owner: "Sam", cat: "Value Prop" },
+                { q: "How do you know people need this?", owner: "Sam", cat: "Value Prop" },
+                { q: "How do users solve this problem now?", owner: "Sam", cat: "Value Prop" },
+                { q: "How big is the market?", owner: "Sam", cat: "Market Size" },
+                { q: "Where do new users come from?", owner: "Sam", cat: "Acquisition" },
+                { q: "What makes new users try you?", owner: "Sam", cat: "Acquisition" },
+                { q: "What makes new users reluctant to try you?", owner: "Sam", cat: "Acquisition" },
+                { q: "How will you overcome user resistance to trying your product?", owner: "Sam", cat: "Acquisition" },
+                { q: "What’s your progress?", owner: "Sam", cat: "Execution" },
+                { q: "What obstacles will you face and how will you overcome them?", owner: "Rohan", cat: "Execution" },
+                { q: "Six months from now, what’s going to be your biggest challenge?", owner: "Rohan", cat: "Execution" },
+                { q: "What is your unique insight?", owner: "Rohan", cat: "Competition" },
+                { q: "What are the key things about your field that outsiders don’t understand?", owner: "Rohan", cat: "Competition" },
+                { q: "Why did you choose this idea to work on?", owner: "Rohan", cat: "Founder Fit" },
+                { q: "Why can't a property manager just use GPT-4o or Gemini to analyze these photos?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "What specifically about 'Spatial AI' makes this better than standard 2D image recognition?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "How do you handle false positives (e.g., a shadow looking like a stain)?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "You mentioned waiting for YC Summer 2026 to complete research—what specific technical breakthrough are you waiting for?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "How do you handle the compute costs of processing video at scale?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "Why is damage detection a hard technical problem that hasn't been solved yet?", owner: "Rohan", cat: "Tech Deep Dive" },
+                { q: "How does your system handle different lighting conditions or low-quality cameras?", owner: "Rohan", cat: "Tech Deep Dive" }
+            ];
 
-            // Value Prop
-            { q: "What problem are you solving?", owner: "Sam", cat: "Value Prop" },
-            { q: "What’s new about what you make?", owner: "Rohan", cat: "Value Prop" },
-            { q: "Who needs what you’re making?", owner: "Sam", cat: "Value Prop" },
-            { q: "What has surprised you about user behavior?", owner: "Sam", cat: "Value Prop" },
-            { q: "How do you know people need this?", owner: "Sam", cat: "Value Prop" },
-            { q: "How do users solve this problem now?", owner: "Sam", cat: "Value Prop" },
+            // --- State ---
+            let currentRole = "Sam";
+            let shuffledQ = [];
+            let currentIndex = 0;
+            let isProcessing = false;
 
-            // Market Size
-            { q: "How big is the market?", owner: "Sam", cat: "Market Size" },
+            // --- DOM Elements ---
+            const roleSelect = document.getElementById('roleSelect');
+            const qText = document.getElementById('question');
+            const cText = document.getElementById('category');
+            const feedbackEl = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackMsg = document.getElementById('feedback-msg');
 
-            // User Acquisition
-            { q: "Where do new users come from?", owner: "Sam", cat: "Acquisition" },
-            { q: "What makes new users try you?", owner: "Sam", cat: "Acquisition" },
-            { q: "What makes new users reluctant to try you?", owner: "Sam", cat: "Acquisition" },
-            { q: "How will you overcome user resistance to trying your product?", owner: "Sam", cat: "Acquisition" }, // Fixed context
+            // --- Logic ---
 
-            // Execution
-            { q: "What’s your progress?", owner: "Sam", cat: "Execution" },
-            { q: "What obstacles will you face and how will you overcome them?", owner: "Rohan", cat: "Execution" },
-            { q: "Six months from now, what’s going to be your biggest challenge?", owner: "Rohan", cat: "Execution" },
-
-            // Competition
-            { q: "What is your unique insight?", owner: "Rohan", cat: "Competition" },
-            { q: "What are the key things about your field that outsiders don’t understand?", owner: "Rohan", cat: "Competition" },
-
-            // Founder-Market Fit
-            { q: "Why did you choose this idea to work on?", owner: "Rohan", cat: "Founder Fit" },
-
-            // Technical Deep Dive (Rohan Specific)
-            { q: "Why can't a property manager just use GPT-4o or Gemini to analyze these photos?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "What specifically about 'Spatial AI' makes this better than standard 2D image recognition?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "How do you handle false positives (e.g., a shadow looking like a stain)?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "You mentioned waiting for YC Summer 2026 to complete research—what specific technical breakthrough are you waiting for?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "How do you handle the compute costs of processing video at scale?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "Why is damage detection a hard technical problem that hasn't been solved yet?", owner: "Rohan", cat: "Tech Deep Dive" },
-            { q: "How does your system handle different lighting conditions or low-quality cameras?", owner: "Rohan", cat: "Tech Deep Dive" }
-        ];
-
-        // --- State ---
-        let currentRole = "Sam";
-        let shuffledQ = [];
-        let currentIndex = 0;
-        let isProcessing = false;
-
-        // --- DOM Elements ---
-        const roleSelect = document.getElementById('roleSelect');
-        const qText = document.getElementById('question');
-        const cText = document.getElementById('category');
-        const feedbackEl = document.getElementById('feedback');
-        const feedbackTitle = document.getElementById('feedback-title');
-        const feedbackMsg = document.getElementById('feedback-msg');
-
-        // --- Logic ---
-
-        function shuffle(array) {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            function shuffle(array) {
+                let curId = array.length;
+                while (0 !== curId) {
+                    let randId = Math.floor(Math.random() * curId);
+                    curId -= 1;
+                    let tmp = array[curId];
+                    array[curId] = array[randId];
+                    array[randId] = tmp;
+                }
+                return array;
             }
-            return array;
-        }
 
-        function initGame() {
-            shuffledQ = shuffle([...questions]);
-            currentIndex = 0;
-            showQuestion();
-        }
-
-        function showQuestion() {
-            if (currentIndex >= shuffledQ.length) {
-                // Reshuffle if end reached
+            function initGame() {
                 shuffledQ = shuffle([...questions]);
                 currentIndex = 0;
-            }
-            
-            const current = shuffledQ[currentIndex];
-            qText.textContent = current.q;
-            cText.textContent = current.cat;
-            
-            // Reset feedback
-            feedbackEl.className = 'feedback-overlay';
-            isProcessing = false;
-        }
-
-        function handleAnswer(userClaimed) {
-            if (isProcessing) return;
-            isProcessing = true;
-
-            const currentQ = shuffledQ[currentIndex];
-            const isMyQuestion = currentQ.owner === currentRole;
-            
-            let isCorrect = false;
-
-            // Logic:
-            // If User Claims (Enter) AND it is their question -> Correct
-            // If User Passes (Space) AND it is NOT their question -> Correct
-            if (userClaimed && isMyQuestion) isCorrect = true;
-            else if (!userClaimed && !isMyQuestion) isCorrect = true;
-
-            // Visual Feedback
-            if (isCorrect) {
-                feedbackEl.classList.add('correct');
-                feedbackTitle.textContent = "Correct!";
-                feedbackMsg.textContent = userClaimed 
-                    ? "You nailed it." 
-                    : `Right, ${currentQ.owner} takes this.`;
-            } else {
-                feedbackEl.classList.add('incorrect');
-                feedbackTitle.textContent = "Wrong!";
-                if (userClaimed) {
-                    feedbackMsg.textContent = `Oops, ${currentQ.owner} should answer this.`;
-                } else {
-                    feedbackMsg.textContent = "Oops, this one is yours!";
-                }
-            }
-
-            feedbackEl.classList.add('show');
-
-            // Next question delay
-            setTimeout(() => {
-                currentIndex++;
                 showQuestion();
-            }, 1500);
+            }
+
+            function showQuestion() {
+                if (currentIndex >= shuffledQ.length) {
+                    shuffledQ = shuffle([...questions]);
+                    currentIndex = 0;
+                }
+                
+                const current = shuffledQ[currentIndex];
+                qText.textContent = current.q;
+                cText.textContent = current.cat;
+                
+                feedbackEl.className = 'feedback-overlay';
+                isProcessing = false;
+            }
+
+            function handleAnswer(userClaimed) {
+                if (isProcessing) return;
+                isProcessing = true;
+
+                const currentQ = shuffledQ[currentIndex];
+                const isMyQuestion = currentQ.owner === currentRole;
+                
+                let isCorrect = false;
+
+                if (userClaimed && isMyQuestion) isCorrect = true;
+                else if (!userClaimed && !isMyQuestion) isCorrect = true;
+
+                if (isCorrect) {
+                    feedbackEl.classList.add('correct');
+                    feedbackTitle.textContent = "Correct!";
+                    feedbackMsg.textContent = userClaimed 
+                        ? "You nailed it." 
+                        : `Right, ${currentQ.owner} takes this.`;
+                } else {
+                    feedbackEl.classList.add('incorrect');
+                    feedbackTitle.textContent = "Wrong!";
+                    if (userClaimed) {
+                        feedbackMsg.textContent = `Oops, ${currentQ.owner} should answer this.`;
+                    } else {
+                        feedbackMsg.textContent = "Oops, this one is yours!";
+                    }
+                }
+
+                feedbackEl.classList.add('show');
+
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 1500);
+            }
+
+            // --- Event Listeners ---
+
+            roleSelect.addEventListener('change', (e) => {
+                currentRole = e.target.value;
+                roleSelect.blur();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (isProcessing) return;
+
+                if (e.code === 'Enter') {
+                    e.preventDefault();
+                    handleAnswer(true);
+                } else if (e.code === 'Space') {
+                    e.preventDefault();
+                    handleAnswer(false);
+                }
+            });
+
+            // Start
+            initGame();
+
+        } catch (err) {
+            document.getElementById('question').textContent = "Error: " + err.message;
+            document.getElementById('question').style.color = "red";
+            document.getElementById('question').style.fontSize = "16px";
         }
-
-        // --- Event Listeners ---
-
-        roleSelect.addEventListener('change', (e) => {
-            currentRole = e.target.value;
-            // Optional: Reset game or just continue with new role
-            roleSelect.blur(); // Remove focus so spacebar doesn't trigger select
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (isProcessing) return;
-
-            if (e.code === 'Enter') {
-                e.preventDefault();
-                handleAnswer(true); // Claimed
-            } else if (e.code === 'Space') {
-                e.preventD
+    });
+    </script>
+</body>
+</html>
